@@ -11,9 +11,9 @@ from src.components.data_transformation import DataTransformationConfig
 
 from src.components.model_trainer import ModelTrainerConfig,ModelTrainer
 
-@dataclass #the decorator that automatically creates the constructor
+@dataclass #the decorator that automatically creates the constructor: it modifies a class or function without changing its original code...dont need to write with self
 class DataIngestionConfig:
-    train_data_path: str=os.path.join('artifact','train.csv')
+    train_data_path: str=os.path.join('artifact','train.csv') #only path is stored..nothing is created
     test_data_path: str=os.path.join('artifact','test.csv')
     raw_data_path: str=os.path.join('artifact','raw.csv')
 
@@ -28,6 +28,7 @@ class DataIngestion:
             df=pd.read_csv('notebookk/dataa/stud.csv')
             logging.info('Read the dataset as dataframe')
 
+            #folder is created i.e=artifact
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path),exist_ok=True)
 
             df.to_csv(self.ingestion_config.raw_data_path,index=False,header=True)
@@ -44,7 +45,7 @@ class DataIngestion:
             return(
                 self.ingestion_config.train_data_path,
                 self.ingestion_config.test_data_path,
-            )
+            ) #return filepaths
 
         except Exception as e:
             raise CustomException(e,sys)
@@ -52,9 +53,12 @@ class DataIngestion:
 if __name__=='__main__':
     obj=DataIngestion()
     train_data,test_data=obj.initiate_data_ingestion()
+    #each contain filepaths
 
     data_transformation=DataTransformation()
     train_arr,test_arr,preprocessor_obj_file_path=data_transformation.initiate_data_transformation(train_data,test_data)
 
     model_trainer=ModelTrainer()
     print(model_trainer.initiate_model_trainer(train_arr,test_arr))
+
+    
